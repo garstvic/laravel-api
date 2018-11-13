@@ -14,3 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+// api/v1/flights
+Route::group(['prefix' => 'api','middleware' => 'api'], function () {
+    Route::resource('v1/flights', v1\FlightController::class);
+});
+
