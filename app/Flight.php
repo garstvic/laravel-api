@@ -14,6 +14,7 @@ class Flight extends Model
         return $this->belongsTo('App\Airport', 'departure_airport_id');
     }
     
+    // ????
     public function passengers() {
         return $this->belongsToMany('App\Customer', 'flight_customer');
     }
