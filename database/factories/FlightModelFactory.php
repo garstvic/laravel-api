@@ -10,7 +10,7 @@ $factory->define(App\Airport::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Flight::class, function (Faker\Generator $faker) {
     $flightHours = $faker->numberBetween(1, 5);
-    $flightTime = new DateInterval('PT', $flightHours . 'H');
+    $flightTime = new DateInterval('PT'. $flightHours . 'H');
     $arrival = $faker->dateTime;
     $depart = clone $arrival;
     $depart->sub($flightTime);
