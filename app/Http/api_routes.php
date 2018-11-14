@@ -6,4 +6,6 @@ use Illuminate\Http\Request;
 //     return $request->user(); 
 // });
 
-Route::resource('v1/flights', v1\FlightController::class);
+Route::resource('v1/flights', v1\FlightController::class, [
+    'except' => ['create', 'edit']    
+]);

@@ -3,6 +3,7 @@
 namespace App\Services\v1;
 
 use App\Flight;
+use App\Airport;
 
 class FlightService {
     protected $supported_includes = [
@@ -28,6 +29,37 @@ class FlightService {
         // return dd(Flight::with($with_keys)->get());
         
         return $this->filterFlights($flights, $with_keys);
+    }
+    
+    public function createFlight($req) {
+        // return dd($req->input());
+        
+        $arrival_airport = $req->input('arrival.iata_code');
+        $departure_airport = $req->input('departure.iata_code');
+        
+        $airports = Airport::whereIn('iata_code', [$arrival_airport, $departure_airport])->get();
+        
+        $codes = [];
+        
+        foreach ($airports as $airport) {
+            $codes[$airport->iata_code] = $airport->id;
+        }
+        
+        // return dd($codes[$arrival_airport]);
+        
+        $flight = new Flight();
+        $flight->flight_number =$req->input('flight_number');
+        $flight->status = $req->input('status');
+        $flight->arrival_airport_id = $codes[$arrival_airport];
+        $flight->arrival_date_time = $req->input('arrival.datetime');
+        $flight->departure_airport_id = $codes[$departure_airport];
+        $flight->departure_date_time = $req->input('departure.datetime');
+        
+        // $flight->save();
+        
+        // return dd($flight);
+        
+        return $this->filterFlights([$flight]);
     }
 
     protected function filterFlights($flights, $keys = []) {
@@ -57,7 +89,6 @@ class FlightService {
                     'iata_code' => $flight->departureAirport->iata_code,
                     'city'      => $flight->departureAirport->city,
                     'state'     => $flight->departureAirport->state,
-                    
                 ];
             }
             
