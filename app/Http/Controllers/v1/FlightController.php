@@ -24,6 +24,8 @@ class FlightController extends Controller
     
     public function __construct(FlightService $service) {
         $this->flights = $service;
+        
+        $this->middleware('auth:api', ['only' => ['store', 'update', 'destroy']]);
     }
     
     /**
