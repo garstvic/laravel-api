@@ -2,6 +2,9 @@
 
 namespace App\Services\v1;
 
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+
 use App\Flight;
 use App\Airport;
 

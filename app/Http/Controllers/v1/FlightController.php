@@ -13,6 +13,15 @@ class FlightController extends Controller
 {
     protected $flights;
     
+    protected $rules = [
+        'flight_number'       => 'required',
+        'status'              => 'required|flightstatus',
+        'arrival.datetime'    => 'required|date',
+        'arrival.iata_code'   => 'required',
+        'departure.datetime'  => 'required|date',
+        'departure.iata_code' => 'required'        
+    ];
+    
     public function __construct(FlightService $service) {
         $this->flights = $service;
     }
@@ -39,6 +48,8 @@ class FlightController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, $this->rules);
+        
         try {
             $flight = $this->flights->createFlight($request);
             return response()->json($flight, 201);
