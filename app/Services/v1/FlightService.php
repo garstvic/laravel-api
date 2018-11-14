@@ -10,28 +10,26 @@ class FlightService {
         'departureAirport' => 'departure'
     ];
     
+    protected $clause_properties = [
+        'status',
+        'flight_number'
+    ];
+    
     public function getFlights($parameters) {
         if (empty($parameters)) {
             return $this->filterFlights(Flight::all());
         }
         
-        $with_keys = [];
+        $with_keys = $this->getWithKeys($parameters);
+        $where_clause = $this->getWhereClause($parameters);
         
-        if (isset($parameters['include'])) {
-            $include_parms = explode(',', $parameters['include']);
-            $includes = array_intersect($this->supported_includes, $include_parms);
-            $with_keys = array_keys($includes);
-        }
-        
+        $flights = Flight::with($with_keys)->where($where_clause)->get();
+
         // return dd(Flight::with($with_keys)->get());
         
-        return $this->filterFlights(Flight::with($with_keys)->get(), $with_keys);
+        return $this->filterFlights($flights, $with_keys);
     }
-    
-    public function getFlight($flight_number) {
-        return $this->filterFlights(Flight::where('flight_number', $flight_number)->get());   
-    }
-    
+
     protected function filterFlights($flights, $keys = []) {
         $data = [];
         
@@ -67,5 +65,30 @@ class FlightService {
         }
         
         return $data;
+    }
+    
+    protected function getWithKeys($parameters) {
+        
+        $with_keys = [];
+        
+        if (isset($parameters['include'])) {
+            $include_parms = explode(',', $parameters['include']);
+            $includes = array_intersect($this->supported_includes, $include_parms);
+            $with_keys = array_keys($includes);
+        }
+        
+        return $with_keys;
+    }
+    
+    protected function getWhereClause($parameters) {
+        $clause = [];
+        
+        foreach ($this->clause_properties as $prop) {
+            if (in_array($prop, array_keys($parameters))) {
+                $clause[$prop] = $parameters[$prop];
+            }
+        }
+        
+        return $clause;
     }
 }
