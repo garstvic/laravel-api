@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Flight extends Model
 {
-    public function arrivalAriport() {
+    public function arrivalAirport() {
         return $this->belongsTo('App\Airport', 'arrival_airport_id');   
     }
     
